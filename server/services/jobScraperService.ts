@@ -44,6 +44,10 @@ export class JobScraperService {
           return this.generateIndeedJobs(source.id);
         case 'glassdoor':
           return this.generateGlassdoorJobs(source.id);
+        case 'shine':
+          return this.generateShineJobs(source.id);
+        case 'internshala':
+          return this.generateInternshallaJobs(source.id);
         default:
           return this.generateGenericJobs(source.id);
       }
@@ -268,6 +272,126 @@ export class JobScraperService {
         isEasyApply: false,
         isFresher: true,
         isInternship: false
+      }
+    ];
+  }
+
+  /**
+   * Generates mock Shine jobs
+   */
+  private generateShineJobs(sourceId: number): InsertJob[] {
+    return [
+      {
+        title: "Frontend Developer (0-2 Years)",
+        company: "WebSolutions India",
+        location: "Kolkata, India",
+        jobType: "Full-time",
+        description: "Looking for fresher/junior frontend developers with HTML, CSS, JavaScript skills. Knowledge of React and Bootstrap is a plus.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 5) * 24 * 60 * 60 * 1000),
+        url: "https://shine.com/jobs/frontend-developer",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: false
+      },
+      {
+        title: "Java Trainee",
+        company: "Tech Accelerator",
+        location: "Hyderabad, India",
+        jobType: "Full-time",
+        description: "6-month training program in Java, Spring Boot, and REST APIs. Opportunity for permanent role based on performance.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 8) * 24 * 60 * 60 * 1000),
+        url: "https://shine.com/jobs/java-trainee",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: false
+      },
+      {
+        title: "IT Support Engineer - AWS",
+        company: "CloudSupport Services",
+        location: "Pune, India",
+        jobType: "Full-time",
+        description: "Entry-level IT support role with focus on AWS infrastructure. You'll help troubleshoot EC2 instances, manage IAM policies, and monitor system health using CloudWatch.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 3) * 24 * 60 * 60 * 1000),
+        url: "https://shine.com/jobs/it-support-engineer-aws",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: false
+      },
+      {
+        title: "Terraform Cloud Engineer",
+        company: "InfraOps Solutions",
+        location: "Mumbai, India",
+        jobType: "Full-time",
+        description: "Looking for a Terraform enthusiast to join our cloud engineering team. Experience with AWS services (EC2, EKS, IAM, VPC) and infrastructure automation is required.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 4) * 24 * 60 * 60 * 1000),
+        url: "https://shine.com/jobs/terraform-cloud-engineer",
+        sourceId,
+        isEasyApply: true,
+        isFresher: false,
+        isInternship: false
+      }
+    ];
+  }
+
+  /**
+   * Generates mock Internshala jobs
+   */
+  private generateInternshallaJobs(sourceId: number): InsertJob[] {
+    return [
+      {
+        title: "Web Development Intern",
+        company: "StartupHub",
+        location: "Remote",
+        jobType: "Internship (3 months)",
+        description: "Learn web development using MERN stack. Stipend provided, with opportunity for PPO based on performance.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 2) * 24 * 60 * 60 * 1000),
+        url: "https://internshala.com/internship/web-development-intern",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: true
+      },
+      {
+        title: "Content Writing Intern",
+        company: "ContentFirst",
+        location: "Work from Home",
+        jobType: "Internship (2 months)",
+        description: "Create blog posts, social media content, and website copy. Perfect for students with good writing skills.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 4) * 24 * 60 * 60 * 1000),
+        url: "https://internshala.com/internship/content-writing-intern",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: true
+      },
+      {
+        title: "Data Analytics Intern",
+        company: "DataMinds",
+        location: "Delhi, India",
+        jobType: "Internship (6 months)",
+        description: "Work with real business data using Excel, SQL, and Power BI. Learn data visualization and statistical analysis.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 1) * 24 * 60 * 60 * 1000),
+        url: "https://internshala.com/internship/data-analytics-intern",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: true
+      },
+      {
+        title: "AWS Cloud Intern",
+        company: "CloudNatics",
+        location: "Bangalore, India",
+        jobType: "Internship (3 months)",
+        description: "Learn and apply AWS services like S3, EC2, RDS, and Lambda in real projects. Work with experienced cloud engineers to design and implement cloud solutions.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 2) * 24 * 60 * 60 * 1000),
+        url: "https://internshala.com/internship/aws-cloud-intern",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: true
       }
     ];
   }

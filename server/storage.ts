@@ -85,6 +85,43 @@ export interface IStorage {
 }
 
 // In-memory implementation of the storage interface
+// Resume matcher helper functions
+function extractSkillsFromText(text: string): string[] {
+  // In a real implementation, this would use NLP or a predefined skill dictionary
+  // For this demo, we'll extract common tech skills using basic pattern matching
+  const skillKeywords = [
+    'javascript', 'typescript', 'react', 'angular', 'vue', 'node', 'express',
+    'python', 'django', 'flask', 'java', 'spring', 'c#', '.net', 'php', 'laravel',
+    'ruby', 'rails', 'go', 'rust', 'html', 'css', 'sass', 'less', 'sql', 'nosql',
+    'mongodb', 'postgresql', 'mysql', 'oracle', 'redis', 'firebase', 'aws', 'azure',
+    'gcp', 'docker', 'kubernetes', 'terraform', 'jenkins', 'gitlab', 'github',
+    'ci/cd', 'rest', 'graphql', 'websocket', 'redux', 'jquery', 'bootstrap',
+    'tailwind', 'material-ui', 'webpack', 'babel', 'eslint', 'jest', 'mocha',
+    'cypress', 'selenium', 'agile', 'scrum', 'kanban', 'jira', 'confluence',
+    'git', 'svn', 'linux', 'windows', 'macos', 'mobile', 'responsive', 'pwa',
+    'spa', 'ssr', 'seo', 'accessibility', 'i18n', 'l10n', 'ux', 'ui', 'figma',
+    'sketch', 'photoshop', 'illustrator', 'analytics', 'marketing', 'sales',
+    'crm', 'erp', 'saas', 'paas', 'iaas', 'security', 'authentication', 'authorization',
+    'oauth', 'jwt', 'encryption', 'ssl', 'tls', 'https', 'sockets', 'apis',
+    'microservices', 'monolith', 'serverless', 'lambda', 'ec2', 's3', 'rds', 'iam',
+    'vpc', 'eks', 'devops', 'database', 'frontend', 'backend', 'fullstack'
+  ];
+  
+  const textLower = text.toLowerCase();
+  return skillKeywords.filter(skill => textLower.includes(skill));
+}
+
+function calculateSkillMatch(resumeSkills: string[], jobSkills: string[]): number {
+  if (resumeSkills.length === 0 || jobSkills.length === 0) return 0;
+  
+  // Count how many job skills are found in the resume
+  const matchedSkills = jobSkills.filter(skill => 
+    resumeSkills.some(resumeSkill => resumeSkill.includes(skill) || skill.includes(resumeSkill))
+  );
+  
+  return Math.round((matchedSkills.length / jobSkills.length) * 100);
+}
+
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private jobSources: Map<number, JobSource>;

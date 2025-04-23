@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { LinkedInService } from "./services/linkedinService";
 import { JobScraperService } from "./services/jobScraperService";
+import { AutoApplyService } from "./services/autoApplyService";
 import { z } from "zod";
 import { 
   insertUserSchema, 
@@ -18,6 +19,7 @@ import {
 // Initialize services
 const linkedInService = new LinkedInService();
 const jobScraperService = new JobScraperService();
+const autoApplyService = new AutoApplyService();
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints
@@ -384,6 +386,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(application);
     } catch (error) {
       res.status(400).json({ message: error instanceof Error ? error.message : "Invalid application data" });
+    }
+  });
+
+  // Auto apply endpoint
+  app.post("/api/jobs/:id/auto-apply", async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.id);
+      const userId = 1; // Using demo user for now
+      
+      if (isNaN(jobId)) {
+        return res.status(400).json({ message: "Invalid job ID" });
+      }
+      
+      const job = await storage.getJob(jobId);
+      
+      if (!job) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Check if Easy Apply is available for this job
+      if (!job.isEasyApply) {
+        return res.status(400).json({ 
+          message: "Easy Apply is not available for this job",
+          redirectUrl: job.url // Provide the original job URL for manual application
+        });
+      }
+      
+      // Handle the auto-apply process
+      try {
+        const application = await autoApplyService.applyToJob(userId, jobId);
+        res.status(201).json({ 
+          success: true, 
+          application,
+          message: "Application submitted successfully" 
+        });
+      } catch (error) {
+        // If auto-apply fails, provide the job URL for manual application
+        res.status(400).json({ 
+          success: false,
+          message: error instanceof Error ? error.message : "Failed to auto-apply", 
+          redirectUrl: job.url 
+        });
+      }
+    } catch (error) {
+      res.status(500).json({ 
+        message: "Failed to process auto-apply request",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 
