@@ -33,14 +33,21 @@ export function AutoApplyButton({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
-  const autoApplyMutation = useMutation({
+  // Define the expected response type
+  interface AutoApplyResponse {
+    message?: string;
+    success: boolean;
+  }
+  
+  const autoApplyMutation = useMutation<AutoApplyResponse, Error>({
     mutationFn: async () => {
-      return apiRequest("POST", `/api/jobs/${jobId}/auto-apply`);
+      const response = await apiRequest("POST", `/api/jobs/${jobId}/auto-apply`);
+      return response as AutoApplyResponse;
     },
     onSuccess: (data) => {
       setApplyResult({
         success: true,
-        message: data.message || "Application submitted successfully"
+        message: data?.message || "Application submitted successfully"
       });
       setShowResult(true);
       

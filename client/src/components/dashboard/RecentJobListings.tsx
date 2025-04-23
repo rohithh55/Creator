@@ -13,7 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { SendIcon, ExternalLink, Bookmark, MapPin, Briefcase, Clock } from "lucide-react";
+import { SendIcon, ExternalLink, Bookmark, MapPin, Briefcase, Clock, Cloud } from "lucide-react";
+import { AutoApplyButton } from "@/components/jobs/AutoApplyButton";
 
 interface RecentJobListingsProps {
   jobs: Job[];
@@ -73,8 +74,8 @@ const RecentJobListings = ({ jobs, onFilterChange, currentFilter }: RecentJobLis
     return `https://logo.clearbit.com/${company.toLowerCase().replace(/\s+/g, '')}.com`;
   };
 
-  const getTimeAgo = (postedDate: string) => {
-    const posted = new Date(postedDate);
+  const getTimeAgo = (postedDate: Date | string) => {
+    const posted = postedDate instanceof Date ? postedDate : new Date(postedDate);
     const now = new Date();
     const diffDays = Math.floor((now.getTime() - posted.getTime()) / (1000 * 60 * 60 * 24));
     
@@ -90,8 +91,11 @@ const RecentJobListings = ({ jobs, onFilterChange, currentFilter }: RecentJobLis
       <div className="px-4 py-5 border-b border-gray-200 sm:px-6">
         <div className="flex justify-between items-center flex-wrap sm:flex-nowrap">
           <div>
-            <h2 className="text-lg font-medium text-gray-900">Recent Job Matches</h2>
-            <p className="mt-1 text-sm text-gray-500">Jobs that match your experience and preferences.</p>
+            <h2 className="text-lg font-medium text-gray-900 flex items-center">
+              <Cloud className="mr-2 h-5 w-5 text-blue-500" />
+              AWS Cloud Job Matches
+            </h2>
+            <p className="mt-1 text-sm text-gray-500">AWS cloud positions that match your experience and certifications</p>
           </div>
           
           {/* Filtering Options */}
@@ -101,14 +105,14 @@ const RecentJobListings = ({ jobs, onFilterChange, currentFilter }: RecentJobLis
                 <SelectValue placeholder="Filter jobs" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Jobs</SelectItem>
-                <SelectItem value="freshers">Freshers Only</SelectItem>
+                <SelectItem value="all">All AWS Jobs</SelectItem>
+                <SelectItem value="freshers">Entry Level</SelectItem>
                 <SelectItem value="internships">Internships</SelectItem>
               </SelectContent>
             </Select>
             
             <Button variant="outline" size="sm" className="flex items-center">
-              More Filters
+              AWS Services
             </Button>
           </div>
         </div>
@@ -199,14 +203,14 @@ const RecentJobListings = ({ jobs, onFilterChange, currentFilter }: RecentJobLis
                   
                   {/* Action Buttons */}
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Button 
-                      className="flex items-center gap-1.5"
-                      disabled={!job.isEasyApply || applyMutation.isPending}
-                      onClick={() => handleApply(job.id)}
-                    >
-                      <SendIcon className="h-4 w-4" />
-                      {job.isEasyApply ? "Easy Apply" : "Apply Manually"}
-                    </Button>
+                    <div className="w-full sm:w-auto">
+                      <AutoApplyButton
+                        jobId={job.id}
+                        isEasyApply={job.isEasyApply}
+                        originalUrl={job.url}
+                        sourceName={job.company}
+                      />
+                    </div>
                     
                     <Button variant="outline" className="flex items-center gap-1.5" asChild>
                       <a href={job.url} target="_blank" rel="noopener noreferrer">

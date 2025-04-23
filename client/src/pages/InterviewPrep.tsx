@@ -41,7 +41,7 @@ type QuestionWithAnswers = InterviewQuestion & {
 };
 
 const InterviewPrep = () => {
-  const [selectedField, setSelectedField] = useState<string>(JobFields.FRONTEND);
+  const [selectedField, setSelectedField] = useState<string>("aws");
   const [activeTab, setActiveTab] = useState("daily");
   const [answerText, setAnswerText] = useState("");
   const { toast } = useToast();
@@ -114,8 +114,8 @@ const InterviewPrep = () => {
   return (
     <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
       <div className="px-4 sm:px-0">
-        <h1 className="text-2xl font-semibold text-gray-900">Interview Preparation</h1>
-        <p className="mt-1 text-sm text-gray-600">Practice with field-specific interview questions and learn from the community.</p>
+        <h1 className="text-2xl font-semibold text-gray-900">AWS Cloud Interview Preparation</h1>
+        <p className="mt-1 text-sm text-gray-600">Practice with AWS-specific interview questions and prepare for your cloud career.</p>
       </div>
 
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -128,16 +128,18 @@ const InterviewPrep = () => {
               </div>
               <Select value={selectedField} onValueChange={setSelectedField}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Select field" />
+                  <SelectValue placeholder="Select AWS Service" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={JobFields.FRONTEND}>Frontend</SelectItem>
-                  <SelectItem value={JobFields.BACKEND}>Backend</SelectItem>
-                  <SelectItem value={JobFields.FULLSTACK}>Fullstack</SelectItem>
-                  <SelectItem value={JobFields.DATA_SCIENCE}>Data Science</SelectItem>
-                  <SelectItem value={JobFields.DESIGN}>Design</SelectItem>
-                  <SelectItem value={JobFields.PRODUCT}>Product</SelectItem>
-                  <SelectItem value={JobFields.MARKETING}>Marketing</SelectItem>
+                  <SelectItem value="aws">All AWS</SelectItem>
+                  <SelectItem value="ec2">EC2</SelectItem>
+                  <SelectItem value="s3">S3</SelectItem>
+                  <SelectItem value="rds">RDS</SelectItem>
+                  <SelectItem value="iam">IAM</SelectItem>
+                  <SelectItem value="vpc">VPC</SelectItem>
+                  <SelectItem value="eks">EKS</SelectItem>
+                  <SelectItem value="lambda">Lambda</SelectItem>
+                  <SelectItem value="cloudformation">CloudFormation</SelectItem>
                 </SelectContent>
               </Select>
             </CardHeader>
@@ -279,8 +281,8 @@ const InterviewPrep = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Interview Tips</CardTitle>
-              <CardDescription>Helpful tips for acing your interview</CardDescription>
+              <CardTitle>AWS Cloud Interview Tips</CardTitle>
+              <CardDescription>Prepare for your AWS cloud role interview</CardDescription>
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
@@ -288,36 +290,42 @@ const InterviewPrep = () => {
                   <div className="flex-shrink-0 h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-2">
                     <span className="text-xs">✓</span>
                   </div>
-                  <p className="text-sm text-gray-600">Research the company before your interview</p>
+                  <p className="text-sm text-gray-600">Review AWS architecture diagrams and best practices</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-2">
                     <span className="text-xs">✓</span>
                   </div>
-                  <p className="text-sm text-gray-600">Prepare examples from your experience</p>
+                  <p className="text-sm text-gray-600">Practice explaining AWS resource deployment patterns</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-2">
                     <span className="text-xs">✓</span>
                   </div>
-                  <p className="text-sm text-gray-600">Practice common questions for your field</p>
+                  <p className="text-sm text-gray-600">Understand AWS Well-Architected Framework's 5 pillars</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-2">
                     <span className="text-xs">✓</span>
                   </div>
-                  <p className="text-sm text-gray-600">Prepare questions to ask the interviewer</p>
+                  <p className="text-sm text-gray-600">Be ready to discuss your AWS certifications and projects</p>
                 </li>
                 <li className="flex items-start">
                   <div className="flex-shrink-0 h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-2">
                     <span className="text-xs">✓</span>
                   </div>
-                  <p className="text-sm text-gray-600">Follow up with a thank-you note after the interview</p>
+                  <p className="text-sm text-gray-600">Prepare examples of complex AWS solutions you've implemented</p>
+                </li>
+                <li className="flex items-start">
+                  <div className="flex-shrink-0 h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-500 mr-2">
+                    <span className="text-xs">✓</span>
+                  </div>
+                  <p className="text-sm text-gray-600">Understand AWS cost optimization strategies</p>
                 </li>
               </ul>
               
               <Button className="mt-4 w-full" variant="outline">
-                View More Tips
+                View AWS Certification Paths
               </Button>
             </CardContent>
           </Card>
