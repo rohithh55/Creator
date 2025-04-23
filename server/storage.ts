@@ -7,6 +7,7 @@ import {
   questionAnswers, type QuestionAnswer, type InsertQuestionAnswer,
   userBadges, type UserBadge, type InsertUserBadge,
   badges, type Badge, type InsertBadge,
+  resumeMatchScores, type ResumeMatchScore, type InsertResumeMatchScore,
   JobStatus, BadgeCategories
 } from "@shared/schema";
 
@@ -18,6 +19,12 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   updateUserLinkedInProfile(userId: number, profileData: any): Promise<User>;
   disconnectLinkedIn(userId: number): Promise<void>;
+  updateUserResume(userId: number, resumeData: { 
+    resumeText: string; 
+    resumeSkills?: any; 
+    resumeEducation?: any; 
+    resumeExperience?: any;
+  }): Promise<User>;
 
   // Job Source operations
   getJobSource(id: number): Promise<JobSource | undefined>;
@@ -67,6 +74,14 @@ export interface IStorage {
 
   // Community operations
   getTopContributors(): Promise<(User & { answerCount: number; totalUpvotes: number; badges: Badge[] })[]>;
+
+  // Resume Match Score operations
+  getResumeMatchScore(userId: number, jobId: number): Promise<ResumeMatchScore | undefined>;
+  calculateResumeMatch(userId: number, jobId: number): Promise<ResumeMatchScore>;
+  getJobsWithMatchScore(userId: number, filter: Record<string, any>, page: number, pageSize: number): Promise<{ 
+    jobs: (Job & { matchScore?: number })[];
+    total: number;
+  }>;
 }
 
 // In-memory implementation of the storage interface
@@ -79,6 +94,7 @@ export class MemStorage implements IStorage {
   private questionAnswers: Map<number, QuestionAnswer>;
   private userBadges: Map<number, UserBadge>;
   private badges: Map<number, Badge>;
+  private resumeMatchScores: Map<string, ResumeMatchScore>; // `${userId}-${jobId}` -> ResumeMatchScore
   private savedJobs: Map<number, Set<number>>; // userId -> Set of jobIds
   private bookmarkedQuestions: Map<number, Set<number>>; // userId -> Set of questionIds
   
@@ -100,6 +116,7 @@ export class MemStorage implements IStorage {
     this.questionAnswers = new Map();
     this.userBadges = new Map();
     this.badges = new Map();
+    this.resumeMatchScores = new Map();
     this.savedJobs = new Map();
     this.bookmarkedQuestions = new Map();
     
@@ -324,6 +341,28 @@ export class MemStorage implements IStorage {
     };
     
     this.users.set(userId, updatedUser);
+  }
+
+  async updateUserResume(userId: number, resumeData: { 
+    resumeText: string; 
+    resumeSkills?: any; 
+    resumeEducation?: any; 
+    resumeExperience?: any;
+  }): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+    
+    const updatedUser: User = {
+      ...user,
+      resumeText: resumeData.resumeText,
+      resumeSkills: resumeData.resumeSkills || null,
+      resumeEducation: resumeData.resumeEducation || null,
+      resumeExperience: resumeData.resumeExperience || null,
+      resumeUpdatedAt: new Date()
+    };
+    
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 
   // Job Source operations

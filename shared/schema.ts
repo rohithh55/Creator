@@ -11,6 +11,11 @@ export const users = pgTable("users", {
   linkedinToken: text("linkedin_token"),
   linkedinProfileData: json("linkedin_profile_data"),
   preferredField: text("preferred_field"),
+  resumeText: text("resume_text"),
+  resumeSkills: json("resume_skills"),
+  resumeEducation: json("resume_education"),
+  resumeExperience: json("resume_experience"),
+  resumeUpdatedAt: timestamp("resume_updated_at"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -191,3 +196,28 @@ export const BadgeCategories = {
   CONTRIBUTION: "contribution",
   PROBLEM_SOLVING: "problem_solving",
 } as const;
+
+// Resume Match Scores table
+export const resumeMatchScores = pgTable("resume_match_scores", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  jobId: integer("job_id").notNull(),
+  matchScore: integer("match_score").notNull(), // 0-100 score
+  skillsMatch: json("skills_match"), // JSON with matched skills and their weights
+  experienceMatch: integer("experience_match").notNull(), // 0-100 score
+  educationMatch: integer("education_match").notNull(), // 0-100 score
+  calculatedAt: timestamp("calculated_at").notNull(),
+});
+
+export const insertResumeMatchScoreSchema = createInsertSchema(resumeMatchScores).pick({
+  userId: true,
+  jobId: true,
+  matchScore: true,
+  skillsMatch: true,
+  experienceMatch: true,
+  educationMatch: true,
+  calculatedAt: true,
+});
+
+export type ResumeMatchScore = typeof resumeMatchScores.$inferSelect;
+export type InsertResumeMatchScore = z.infer<typeof insertResumeMatchScoreSchema>;
