@@ -29,6 +29,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Loader2, ExternalLink, Bookmark, SendIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { AutoApplyButton } from "@/components/jobs/AutoApplyButton";
 
 const JobBoard = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -121,35 +122,72 @@ const JobBoard = () => {
           </div>
           
           <div className="mt-4">
-            <p className="text-sm font-medium mb-2">Technology Category</p>
+            <p className="text-sm font-medium mb-2">AWS Services</p>
             <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
               <Button 
                 variant={techCategory === 'all' ? "default" : "outline"} 
                 size="sm"
                 onClick={() => setTechCategory('all')}
               >
-                All
+                All AWS
               </Button>
               <Button 
-                variant={techCategory === JobFields.PYTHON ? "default" : "outline"}
+                variant={techCategory === 'ec2' ? "default" : "outline"}
                 size="sm" 
-                onClick={() => setTechCategory(JobFields.PYTHON)}
+                onClick={() => setTechCategory('ec2')}
               >
-                Python
+                EC2
               </Button>
               <Button 
-                variant={techCategory === JobFields.AWS ? "default" : "outline"} 
+                variant={techCategory === 's3' ? "default" : "outline"} 
                 size="sm"
-                onClick={() => setTechCategory(JobFields.AWS)}
+                onClick={() => setTechCategory('s3')}
               >
-                AWS
+                S3
               </Button>
               <Button 
-                variant={techCategory === JobFields.KUBERNETES ? "default" : "outline"} 
+                variant={techCategory === 'rds' ? "default" : "outline"} 
                 size="sm"
-                onClick={() => setTechCategory(JobFields.KUBERNETES)}
+                onClick={() => setTechCategory('rds')}
               >
-                Kubernetes
+                RDS
+              </Button>
+              <Button 
+                variant={techCategory === 'iam' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('iam')}
+              >
+                IAM
+              </Button>
+              <Button 
+                variant={techCategory === 'vpc' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('vpc')}
+              >
+                VPC
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-2 mt-2">
+              <Button 
+                variant={techCategory === 'eks' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('eks')}
+              >
+                EKS
+              </Button>
+              <Button 
+                variant={techCategory === 'lambda' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('lambda')}
+              >
+                Lambda
+              </Button>
+              <Button 
+                variant={techCategory === 'cloudformation' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('cloudformation')}
+              >
+                CloudFormation
               </Button>
               <Button 
                 variant={techCategory === JobFields.TERRAFORM ? "default" : "outline"} 
@@ -157,6 +195,13 @@ const JobBoard = () => {
                 onClick={() => setTechCategory(JobFields.TERRAFORM)}
               >
                 Terraform
+              </Button>
+              <Button 
+                variant={techCategory === 'cloudwatch' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('cloudwatch')}
+              >
+                CloudWatch
               </Button>
               <Button 
                 variant={techCategory === JobFields.DEVOPS ? "default" : "outline"} 
@@ -232,14 +277,14 @@ const JobBoard = () => {
                       </div>
                       
                       <div className="mt-4 flex flex-wrap gap-2">
-                        <Button 
-                          className="flex items-center gap-1.5" 
-                          onClick={() => handleApply(job.id)}
-                          disabled={!job.isEasyApply}
-                        >
-                          <SendIcon className="h-4 w-4" />
-                          {job.isEasyApply ? "Easy Apply" : "Apply Manually"}
-                        </Button>
+                        <div className="w-full sm:w-auto">
+                          <AutoApplyButton
+                            jobId={job.id}
+                            isEasyApply={job.isEasyApply}
+                            originalUrl={job.url}
+                            sourceName={job.company}
+                          />
+                        </div>
                         
                         <Button variant="outline" className="flex items-center gap-1.5" asChild>
                           <a href={job.url} target="_blank" rel="noopener noreferrer">
