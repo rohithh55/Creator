@@ -9,8 +9,11 @@ import JobBoard from "@/pages/JobBoard";
 import Applications from "@/pages/Applications";
 import InterviewPrep from "@/pages/InterviewPrep";
 import Community from "@/pages/Community";
+import AuthPage from "@/pages/auth-page";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
   return (
@@ -18,11 +21,12 @@ function Router() {
       <Header />
       <main className="flex-grow">
         <Switch>
-          <Route path="/" component={Dashboard} />
-          <Route path="/job-board" component={JobBoard} />
-          <Route path="/applications" component={Applications} />
-          <Route path="/interview-prep" component={InterviewPrep} />
-          <Route path="/community" component={Community} />
+          <ProtectedRoute path="/" component={Dashboard} />
+          <ProtectedRoute path="/job-board" component={JobBoard} />
+          <ProtectedRoute path="/applications" component={Applications} />
+          <ProtectedRoute path="/interview-prep" component={InterviewPrep} />
+          <ProtectedRoute path="/community" component={Community} />
+          <Route path="/auth" component={AuthPage} />
           <Route component={NotFound} />
         </Switch>
       </main>
@@ -34,10 +38,12 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

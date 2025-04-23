@@ -1,5 +1,5 @@
-[work.python_aws_app]
-name = "Start Python Application"
-command = "python run.py"
+[work.node_aws_app]
+name = "Start application"
+command = "npm run dev"
 persistent = true
 always_on = true
