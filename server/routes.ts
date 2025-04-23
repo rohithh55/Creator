@@ -258,7 +258,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/jobs/search", async (req, res) => {
     try {
-      const { query, location, filter, page = "1" } = req.query;
+      const { query, location, filter, techCategory, page = "1" } = req.query;
       const pageNumber = parseInt(page as string);
       const pageSize = 10;
       
@@ -268,10 +268,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const filterOptions: Record<string, any> = {};
       
+      // Job type filters (freshers/internships)
       if (filter === "freshers") {
         filterOptions.isFresher = true;
       } else if (filter === "internships") {
         filterOptions.isInternship = true;
+      }
+      
+      // Technology category filter
+      if (techCategory && techCategory !== 'all') {
+        filterOptions.techCategory = techCategory as string;
       }
       
       if (query) {

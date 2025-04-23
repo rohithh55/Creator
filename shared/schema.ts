@@ -179,6 +179,11 @@ export const JobFields = {
   DESIGN: "design",
   PRODUCT: "product",
   MARKETING: "marketing",
+  PYTHON: "python",
+  AWS: "aws",
+  KUBERNETES: "kubernetes",
+  TERRAFORM: "terraform",
+  DEVOPS: "devops",
 } as const;
 
 export const BadgeCategories = {

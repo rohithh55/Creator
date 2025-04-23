@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Job } from "@shared/schema";
+import { Job, JobFields } from "@shared/schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { 
@@ -34,6 +34,7 @@ const JobBoard = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<'all' | 'freshers' | 'internships'>('all');
+  const [techCategory, setTechCategory] = useState<string>('all');
   const [location, setLocation] = useState("");
   const { toast } = useToast();
 
@@ -42,7 +43,7 @@ const JobBoard = () => {
     total: number,
     pages: number
   }>({
-    queryKey: ['/api/jobs/search', searchTerm, filterType, location, currentPage],
+    queryKey: ['/api/jobs/search', searchTerm, filterType, techCategory, location, currentPage],
   });
 
   const handleApply = async (jobId: number) => {
@@ -118,6 +119,55 @@ const JobBoard = () => {
               </Select>
             </div>
           </div>
+          
+          <div className="mt-4">
+            <p className="text-sm font-medium mb-2">Technology Category</p>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
+              <Button 
+                variant={techCategory === 'all' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory('all')}
+              >
+                All
+              </Button>
+              <Button 
+                variant={techCategory === JobFields.PYTHON ? "default" : "outline"}
+                size="sm" 
+                onClick={() => setTechCategory(JobFields.PYTHON)}
+              >
+                Python
+              </Button>
+              <Button 
+                variant={techCategory === JobFields.AWS ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory(JobFields.AWS)}
+              >
+                AWS
+              </Button>
+              <Button 
+                variant={techCategory === JobFields.KUBERNETES ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory(JobFields.KUBERNETES)}
+              >
+                Kubernetes
+              </Button>
+              <Button 
+                variant={techCategory === JobFields.TERRAFORM ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory(JobFields.TERRAFORM)}
+              >
+                Terraform
+              </Button>
+              <Button 
+                variant={techCategory === JobFields.DEVOPS ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setTechCategory(JobFields.DEVOPS)}
+              >
+                DevOps
+              </Button>
+            </div>
+          </div>
+          
           <Button className="mt-4">Search Jobs</Button>
         </CardContent>
       </Card>

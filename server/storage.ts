@@ -406,6 +406,75 @@ export class MemStorage implements IStorage {
       filteredJobs = filteredJobs.filter((job) => job.isInternship === filter.isInternship);
     }
     
+    // Tech category filter
+    if (filter.techCategory) {
+      const techCategoryLower = filter.techCategory.toLowerCase();
+      filteredJobs = filteredJobs.filter((job) => {
+        const titleLower = job.title.toLowerCase();
+        const descriptionLower = job.description.toLowerCase();
+        
+        switch (techCategoryLower) {
+          case 'python':
+            return titleLower.includes('python') || descriptionLower.includes('python');
+          case 'aws':
+            return (
+              // General AWS terms
+              titleLower.includes('aws') || 
+              descriptionLower.includes('aws') || 
+              titleLower.includes('amazon web services') || 
+              descriptionLower.includes('amazon web services') ||
+              
+              // Specific AWS services
+              titleLower.includes('ec2') || 
+              descriptionLower.includes('ec2') ||
+              titleLower.includes('s3') || 
+              descriptionLower.includes('s3') ||
+              titleLower.includes('rds') || 
+              descriptionLower.includes('rds') ||
+              titleLower.includes('iam') || 
+              descriptionLower.includes('iam') ||
+              titleLower.includes('vpc') || 
+              descriptionLower.includes('vpc') ||
+              titleLower.includes('eks') || 
+              descriptionLower.includes('eks') ||
+              titleLower.includes('lambda') || 
+              descriptionLower.includes('lambda') ||
+              titleLower.includes('cloudformation') || 
+              descriptionLower.includes('cloudformation') ||
+              titleLower.includes('dynamodb') || 
+              descriptionLower.includes('dynamodb')
+            );
+          case 'kubernetes':
+            return titleLower.includes('kubernetes') || 
+                   descriptionLower.includes('kubernetes') || 
+                   titleLower.includes('k8s') || 
+                   descriptionLower.includes('k8s') ||
+                   titleLower.includes('eks') || 
+                   descriptionLower.includes('eks');
+          case 'terraform':
+            return titleLower.includes('terraform') || 
+                   descriptionLower.includes('terraform') || 
+                   titleLower.includes('iac') || 
+                   descriptionLower.includes('infrastructure as code') ||
+                   titleLower.includes('hashicorp') || 
+                   descriptionLower.includes('hashicorp');
+          case 'devops':
+            return titleLower.includes('devops') || 
+                   descriptionLower.includes('devops') || 
+                   titleLower.includes('ci/cd') || 
+                   descriptionLower.includes('ci/cd') ||
+                   titleLower.includes('jenkins') || 
+                   descriptionLower.includes('jenkins') ||
+                   titleLower.includes('gitlab') || 
+                   descriptionLower.includes('gitlab') ||
+                   titleLower.includes('github actions') || 
+                   descriptionLower.includes('github actions');
+          default:
+            return false;
+        }
+      });
+    }
+    
     if (filter.title) {
       const titleLower = filter.title.toLowerCase();
       filteredJobs = filteredJobs.filter((job) => 

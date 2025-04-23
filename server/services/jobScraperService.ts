@@ -96,6 +96,45 @@ export class JobScraperService {
         isEasyApply: true,
         isFresher: true,
         isInternship: false
+      },
+      {
+        title: "AWS Cloud Engineer (Entry Level)",
+        company: "CloudTech Solutions",
+        location: "Mumbai, India (Hybrid)",
+        jobType: "Full-time",
+        description: "Seeking a junior cloud engineer to help manage AWS infrastructure. Knowledge of EC2, S3, RDS, IAM, and VPC is preferred. Great opportunity for AWS certification.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 3) * 24 * 60 * 60 * 1000),
+        url: "https://linkedin.com/jobs/view/aws-cloud-engineer-entry-level",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: false
+      },
+      {
+        title: "DevOps Engineer Intern",
+        company: "TechSystems Inc",
+        location: "Bangalore, India",
+        jobType: "Internship (6 months)",
+        description: "Join our DevOps team to learn CI/CD pipelines, Kubernetes, and Terraform. You'll work with experienced engineers to automate infrastructure deployment and application delivery.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 2) * 24 * 60 * 60 * 1000),
+        url: "https://linkedin.com/jobs/view/devops-engineer-intern",
+        sourceId,
+        isEasyApply: true,
+        isFresher: true,
+        isInternship: true
+      },
+      {
+        title: "Python Developer - AWS Integration",
+        company: "DataSystems Ltd",
+        location: "Delhi, India (Remote)",
+        jobType: "Full-time",
+        description: "Looking for Python developers to work on AWS Lambda functions, DynamoDB integration, and other serverless applications. Experience with Python frameworks and AWS SDK is a plus.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000),
+        url: "https://linkedin.com/jobs/view/python-developer-aws-integration",
+        sourceId,
+        isEasyApply: true,
+        isFresher: false,
+        isInternship: false
       }
     ];
   }
@@ -143,6 +182,45 @@ export class JobScraperService {
         isEasyApply: false,
         isFresher: true,
         isInternship: true
+      },
+      {
+        title: "Terraform Infrastructure Engineer",
+        company: "InfraTech Solutions",
+        location: "Hyderabad, India",
+        jobType: "Full-time",
+        description: "Looking for a Terraform expert to help manage our infrastructure as code. Experience with AWS, VPC, IAM, and EC2 is required. You'll be working on automating cloud infrastructure deployments.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 4) * 24 * 60 * 60 * 1000),
+        url: "https://indeed.com/jobs/terraform-infrastructure-engineer",
+        sourceId,
+        isEasyApply: false,
+        isFresher: false,
+        isInternship: false
+      },
+      {
+        title: "AWS S3 & RDS Specialist",
+        company: "DataCloud Engineering",
+        location: "Pune, India (Remote)",
+        jobType: "Full-time",
+        description: "Seeking an AWS specialist with deep knowledge of S3, RDS, and data migration techniques. You will be responsible for designing and implementing secure and scalable data storage solutions on AWS.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 6) * 24 * 60 * 60 * 1000),
+        url: "https://indeed.com/jobs/aws-s3-rds-specialist",
+        sourceId,
+        isEasyApply: false,
+        isFresher: false,
+        isInternship: false
+      },
+      {
+        title: "Junior Kubernetes Administrator",
+        company: "ContainerTech",
+        location: "Bangalore, India",
+        jobType: "Full-time",
+        description: "Entry-level position for Kubernetes enthusiasts. You'll learn to manage EKS clusters, deploy applications, and implement CI/CD pipelines. Great opportunity to grow your container orchestration skills.",
+        postedDate: new Date(Date.now() - Math.floor(Math.random() * 2) * 24 * 60 * 60 * 1000),
+        url: "https://indeed.com/jobs/junior-kubernetes-administrator",
+        sourceId,
+        isEasyApply: false,
+        isFresher: true,
+        isInternship: false
       }
     ];
   }
