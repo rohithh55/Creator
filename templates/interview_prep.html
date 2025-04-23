@@ -1,0 +1,528 @@
+{% extends "layout.html" %}
+
+{% block title %}AWS Interview Preparation{% endblock %}
+
+{% block head %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load daily question
+        fetchDailyQuestion();
+        
+        // Load questions for default field
+        fetchQuestions('aws_general');
+        
+        // Add event listeners for field buttons
+        document.querySelectorAll('[data-field]').forEach(button => {
+            button.addEventListener('click', function() {
+                // Toggle active state
+                document.querySelectorAll('[data-field]').forEach(btn => {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-800');
+                });
+                
+                this.classList.remove('bg-gray-200', 'text-gray-800');
+                this.classList.add('bg-blue-600', 'text-white');
+                
+                // Fetch questions for the selected field
+                fetchQuestions(this.getAttribute('data-field'));
+            });
+        });
+    });
+    
+    function fetchDailyQuestion() {
+        const container = document.getElementById('daily-question-container');
+        
+        container.innerHTML = `
+            <div class="flex justify-center items-center h-64">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+        `;
+        
+        // Get the active field
+        const activeFieldBtn = document.querySelector('[data-field].bg-blue-600');
+        const field = activeFieldBtn ? activeFieldBtn.getAttribute('data-field') : 'aws_general';
+        
+        fetch(`/api/interview-questions/daily?field=${field}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data) {
+                    container.innerHTML = `
+                        <div class="bg-gray-100 p-6 rounded-lg">
+                            <p class="text-lg text-gray-600">No daily question available for this AWS service category.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                renderDailyQuestion(data);
+            })
+            .catch(error => {
+                console.error('Error fetching daily question:', error);
+                container.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <p>An error occurred while fetching the daily AWS question. Please try again later.</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function fetchQuestions(field) {
+        const container = document.getElementById('questions-container');
+        
+        container.innerHTML = `
+            <div class="flex justify-center items-center h-64">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+        `;
+        
+        fetch(`/api/interview-questions?field=${field}`)
+            .then(response => response.json())
+            .then(data => {
+                if (!data || data.length === 0) {
+                    container.innerHTML = `
+                        <div class="bg-gray-100 p-6 rounded-lg">
+                            <p class="text-lg text-gray-600">No AWS interview questions available for this category.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                renderQuestions(data);
+                
+                // Also update daily question for this field
+                fetchDailyQuestion();
+            })
+            .catch(error => {
+                console.error('Error fetching AWS questions:', error);
+                container.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <p>An error occurred while fetching AWS interview questions. Please try again later.</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function renderDailyQuestion(question) {
+        const container = document.getElementById('daily-question-container');
+        
+        const difficultyClass = {
+            'easy': 'bg-green-100 text-green-800',
+            'medium': 'bg-yellow-100 text-yellow-800',
+            'hard': 'bg-red-100 text-red-800'
+        }[question.difficulty.toLowerCase()] || 'bg-gray-100 text-gray-800';
+        
+        const answersHtml = question.answers.length > 0 
+            ? question.answers.map(answer => {
+                return `
+                    <div class="border-t border-gray-200 pt-4 mt-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                                        ${answer.user.username.charAt(0).toUpperCase()}
+                                    </div>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-900">${answer.user.username}</p>
+                                    <p class="text-xs text-gray-500">${new Date(answer.created_at).toLocaleString()}</p>
+                                </div>
+                            </div>
+                            <button 
+                                onclick="upvoteAnswer(${answer.id}, this)" 
+                                class="flex items-center text-sm text-gray-500 hover:text-blue-600 transition-colors"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                                </svg>
+                                <span>${answer.upvotes}</span>
+                            </button>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-700">
+                            ${answer.answer}
+                        </div>
+                    </div>
+                `;
+            }).join('')
+            : `
+                <div class="border-t border-gray-200 pt-4 mt-4">
+                    <p class="text-sm text-gray-600">No answers yet. Be the first to answer!</p>
+                </div>
+            `;
+        
+        container.innerHTML = `
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xl font-semibold text-gray-900">AWS Daily Question</h3>
+                    <div class="flex items-center">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${difficultyClass} mr-2">
+                            ${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
+                        </span>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            ${question.aws_service || 'AWS General'}
+                        </span>
+                    </div>
+                </div>
+                
+                <p class="mt-4 text-gray-800 font-medium">${question.question}</p>
+                
+                ${answersHtml}
+                
+                <div class="mt-6">
+                    <form id="answer-form-daily" onsubmit="submitAnswer(event, ${question.id}, 'daily')">
+                        <label for="answer-daily" class="block text-sm font-medium text-gray-700">Your Answer</label>
+                        <textarea 
+                            id="answer-daily" 
+                            rows="4" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            placeholder="Share your AWS expertise..."
+                        ></textarea>
+                        <div class="mt-3 flex justify-end">
+                            <button 
+                                type="submit"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            >
+                                Submit Answer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="mt-4 flex justify-end">
+                    <button 
+                        onclick="bookmarkQuestion(${question.id}, this)" 
+                        class="inline-flex items-center text-sm ${question.is_bookmarked ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'} transition-colors"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="${question.is_bookmarked ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                        </svg>
+                        ${question.is_bookmarked ? 'Bookmarked' : 'Bookmark'}
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    function renderQuestions(questions) {
+        const container = document.getElementById('questions-container');
+        
+        const questionsHtml = questions.map(question => {
+            const difficultyClass = {
+                'easy': 'bg-green-100 text-green-800',
+                'medium': 'bg-yellow-100 text-yellow-800',
+                'hard': 'bg-red-100 text-red-800'
+            }[question.difficulty.toLowerCase()] || 'bg-gray-100 text-gray-800';
+            
+            return `
+                <div class="bg-white rounded-lg shadow hover:shadow-md transition-shadow p-5 mb-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">${question.question}</h3>
+                        <div class="flex items-center">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${difficultyClass} mr-2">
+                                ${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                ${question.aws_service || 'AWS General'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                            </svg>
+                            ${question.answer_count} answer${question.answer_count !== 1 ? 's' : ''}
+                        </div>
+                        
+                        <button 
+                            onclick="bookmarkQuestion(${question.id}, this)" 
+                            class="inline-flex items-center ${question.is_bookmarked ? 'text-blue-600' : 'text-gray-500 hover:text-blue-600'} transition-colors"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="${question.is_bookmarked ? 'currentColor' : 'none'}" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                            </svg>
+                            ${question.is_bookmarked ? 'Bookmarked' : 'Bookmark'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = questionsHtml;
+    }
+    
+    function submitAnswer(event, questionId, type) {
+        event.preventDefault();
+        
+        const formId = type === 'daily' ? 'answer-daily' : `answer-${questionId}`;
+        const textarea = document.getElementById(formId);
+        const answerText = textarea.value.trim();
+        
+        if (!answerText) {
+            showNotification('Error', 'Please enter an answer', 'error');
+            return;
+        }
+        
+        fetch(`/api/interview-questions/${questionId}/answers`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                answer: answerText
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            showNotification('Success', 'Your answer has been submitted', 'success');
+            textarea.value = '';
+            
+            // Refresh the questions or daily question
+            if (type === 'daily') {
+                fetchDailyQuestion();
+            } else {
+                const activeFieldBtn = document.querySelector('[data-field].bg-blue-600');
+                const field = activeFieldBtn ? activeFieldBtn.getAttribute('data-field') : 'aws_general';
+                fetchQuestions(field);
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting answer:', error);
+            showNotification('Error', 'Failed to submit your answer', 'error');
+        });
+    }
+    
+    function upvoteAnswer(answerId, button) {
+        fetch(`/api/answers/${answerId}/upvote`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the upvote count in the UI
+            const upvoteCountSpan = button.querySelector('span');
+            upvoteCountSpan.textContent = data.upvotes;
+            
+            showNotification('Success', 'Answer upvoted', 'success');
+        })
+        .catch(error => {
+            console.error('Error upvoting answer:', error);
+            showNotification('Error', 'Failed to upvote answer', 'error');
+        });
+    }
+    
+    function bookmarkQuestion(questionId, button) {
+        fetch(`/api/interview-questions/${questionId}/bookmark`, {
+            method: 'POST'
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Update the bookmark button UI
+            const svg = button.querySelector('svg');
+            
+            if (button.classList.contains('text-blue-600')) {
+                button.classList.remove('text-blue-600');
+                button.classList.add('text-gray-500', 'hover:text-blue-600');
+                svg.setAttribute('fill', 'none');
+                button.textContent = 'Bookmark';
+            } else {
+                button.classList.remove('text-gray-500', 'hover:text-blue-600');
+                button.classList.add('text-blue-600');
+                svg.setAttribute('fill', 'currentColor');
+                button.textContent = 'Bookmarked';
+            }
+            
+            // Add the SVG back since textContent replaced it
+            button.prepend(svg);
+            
+            showNotification('Success', 'Question bookmarked', 'success');
+        })
+        .catch(error => {
+            console.error('Error bookmarking question:', error);
+            showNotification('Error', 'Failed to bookmark question', 'error');
+        });
+    }
+    
+    function showNotification(title, message, type = 'success') {
+        const notification = document.getElementById('notification');
+        const notificationTitle = document.getElementById('notification-title');
+        const notificationMessage = document.getElementById('notification-message');
+        
+        // Set content
+        notificationTitle.textContent = title;
+        notificationMessage.textContent = message;
+        
+        // Set style based on type
+        if (type === 'error') {
+            notification.classList.remove('bg-green-50', 'border-green-400', 'text-green-800');
+            notification.classList.add('bg-red-50', 'border-red-400', 'text-red-800');
+        } else {
+            notification.classList.remove('bg-red-50', 'border-red-400', 'text-red-800');
+            notification.classList.add('bg-green-50', 'border-green-400', 'text-green-800');
+        }
+        
+        // Show notification
+        notification.classList.remove('hidden');
+        
+        // Hide after 5 seconds
+        setTimeout(() => {
+            notification.classList.add('hidden');
+        }, 5000);
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-6">AWS Cloud Interview Preparation</h1>
+
+<div class="mb-6">
+    <p class="text-gray-600">Prepare for your AWS cloud computing interviews with questions and expert answers from the AWS community.</p>
+</div>
+
+<!-- AWS Service Filter -->
+<div class="mb-8">
+    <h2 class="text-lg font-semibold mb-3">AWS Service Categories</h2>
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-2">
+        <button 
+            data-field="aws_general" 
+            class="bg-blue-600 text-white py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+        >
+            AWS General
+        </button>
+        <button 
+            data-field="ec2" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            EC2
+        </button>
+        <button 
+            data-field="s3" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            S3
+        </button>
+        <button 
+            data-field="lambda" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            Lambda
+        </button>
+        <button 
+            data-field="rds" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            RDS
+        </button>
+        <button 
+            data-field="dynamodb" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            DynamoDB
+        </button>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-6 gap-2 mt-2">
+        <button 
+            data-field="iam" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            IAM
+        </button>
+        <button 
+            data-field="vpc" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            VPC
+        </button>
+        <button 
+            data-field="eks" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            EKS
+        </button>
+        <button 
+            data-field="cloudformation" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            CloudFormation
+        </button>
+        <button 
+            data-field="cloudwatch" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            CloudWatch
+        </button>
+        <button 
+            data-field="security" 
+            class="bg-gray-200 text-gray-800 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-300 transition-colors"
+        >
+            AWS Security
+        </button>
+    </div>
+</div>
+
+<!-- Notification -->
+<div id="notification" class="hidden fixed top-4 right-4 max-w-md bg-green-50 border-l-4 border-green-400 p-4 shadow-md rounded-md z-50">
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="ml-3">
+            <h3 id="notification-title" class="text-sm font-medium"></h3>
+            <div id="notification-message" class="mt-1 text-sm"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Daily AWS Cloud Question -->
+<div class="mb-8">
+    <h2 class="text-xl font-semibold mb-4">Daily AWS Interview Question</h2>
+    <div id="daily-question-container" class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex justify-center items-center h-32">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        </div>
+    </div>
+</div>
+
+<!-- AWS Interview Questions List -->
+<div class="mt-12">
+    <h2 class="text-xl font-semibold mb-4">AWS Cloud Interview Questions</h2>
+    <div id="questions-container" class="space-y-4">
+        <div class="flex justify-center items-center h-64">
+            <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        </div>
+    </div>
+</div>
+
+<!-- AWS Interview Tips Section -->
+<div class="mt-12 bg-white rounded-lg shadow-md p-6">
+    <h2 class="text-xl font-semibold mb-4">AWS Interview Tips</h2>
+    
+    <div class="space-y-4">
+        <div class="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 class="text-lg font-medium text-gray-900">Know Your AWS Services</h3>
+            <p class="text-gray-600 mt-1">Understand the key AWS services like EC2, S3, RDS, Lambda, and IAM. Be able to explain when and why you would use each service.</p>
+        </div>
+        
+        <div class="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 class="text-lg font-medium text-gray-900">Prepare AWS Architecture Examples</h3>
+            <p class="text-gray-600 mt-1">Be ready to discuss cloud architecture patterns and how you would implement solutions using AWS services.</p>
+        </div>
+        
+        <div class="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 class="text-lg font-medium text-gray-900">Understand AWS Security</h3>
+            <p class="text-gray-600 mt-1">Security is a top priority for AWS. Know about IAM roles, security groups, network ACLs, and AWS security best practices.</p>
+        </div>
+        
+        <div class="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 class="text-lg font-medium text-gray-900">Review AWS Well-Architected Framework</h3>
+            <p class="text-gray-600 mt-1">Understand the five pillars: operational excellence, security, reliability, performance efficiency, and cost optimization.</p>
+        </div>
+        
+        <div class="border-l-4 border-blue-500 pl-4 py-2">
+            <h3 class="text-lg font-medium text-gray-900">Practice with Scenarios</h3>
+            <p class="text-gray-600 mt-1">Practice solving AWS architecture scenarios. Be prepared to whiteboard solutions for scalability, high availability, and disaster recovery.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

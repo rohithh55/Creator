@@ -103,7 +103,7 @@ class InterviewQuestion(db.Model):
     field = db.Column(db.String(50), nullable=False)  # aws_general, ec2, s3, lambda, etc.
     difficulty = db.Column(db.String(20))  # easy, medium, hard
     is_pinned = db.Column(db.Boolean, default=False)
-    aws_service = db.Column(db.String(50))  # Specific AWS service this question relates to
+    aws_service = db.Column(db.String(100))  # Specific AWS services this question relates to
     
     # Relationships
     answers = db.relationship('QuestionAnswer', backref='question', lazy=True)
