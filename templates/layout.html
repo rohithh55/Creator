@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AWS Job Search Platform{% endblock %}</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles */
+        .aws-gradient {
+            background: linear-gradient(90deg, #232F3E 0%, #FF9900 100%);
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body class="min-h-screen bg-gray-50">
+    <header class="bg-gray-800 text-white">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-orange-400">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                    </svg>
+                    <h1 class="text-2xl font-bold">AWS Job Search</h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-6">
+                    <a href="{{ url_for('dashboard') }}" class="hover:text-orange-400">Dashboard</a>
+                    <a href="{{ url_for('job_board') }}" class="hover:text-orange-400">Job Board</a>
+                    <a href="{{ url_for('applications') }}" class="hover:text-orange-400">Applications</a>
+                    <a href="{{ url_for('interview_prep') }}" class="hover:text-orange-400">Interview Prep</a>
+                    <a href="{{ url_for('community') }}" class="hover:text-orange-400">Community</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('profile') }}" class="hover:text-orange-400">Profile</a>
+                    <a href="{{ url_for('logout') }}" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-md">Logout</a>
+                    {% else %}
+                    <a href="{{ url_for('login') }}" class="hover:text-orange-400">Login</a>
+                    <a href="{{ url_for('register') }}" class="bg-orange-500 hover:bg-orange-600 px-4 py-2 rounded-md">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-8">
+            {% for category, message in messages %}
+            <div class="p-4 mb-4 rounded-md {% if category == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="text-xl font-bold mb-4">AWS Job Search Platform</h2>
+                    <p class="text-gray-400">Find and apply to AWS cloud computing jobs with ease.</p>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Features</h3>
+                        <ul class="space-y-2">
+                            <li><a href="{{ url_for('job_board') }}" class="text-gray-400 hover:text-white">AWS Job Listings</a></li>
+                            <li><a href="{{ url_for('applications') }}" class="text-gray-400 hover:text-white">Application Tracking</a></li>
+                            <li><a href="{{ url_for('interview_prep') }}" class="text-gray-400 hover:text-white">AWS Interview Questions</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Resume Matching</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Resources</h3>
+                        <ul class="space-y-2">
+                            <li><a href="#" class="text-gray-400 hover:text-white">AWS Services Guide</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">Certification Paths</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">AWS Community</a></li>
+                            <li><a href="#" class="text-gray-400 hover:text-white">AWS News</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400">© 2025 AWS Job Search Platform. All rights reserved.</p>
+                <div class="mt-4 md:mt-0 flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>
