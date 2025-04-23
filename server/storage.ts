@@ -57,6 +57,9 @@ export interface IStorage {
   getBookmarkedInterviewQuestions(userId: number, field: string): Promise<(InterviewQuestion & { answers: QuestionAnswer[] })[]>;
   getDailyInterviewQuestion(field: string): Promise<(InterviewQuestion & { answers: QuestionAnswer[]; answerCount: number }) | undefined>;
   bookmarkInterviewQuestion(userId: number, questionId: number): Promise<void>;
+  getAllInterviewQuestions(): Promise<InterviewQuestion[]>;
+  getQuestionAnswersByUser(userId: number): Promise<QuestionAnswer[]>;
+  getInterviewQuestionsByService(service: string): Promise<InterviewQuestion[]>;
 
   // Question Answer operations
   getQuestionAnswer(id: number): Promise<QuestionAnswer | undefined>;

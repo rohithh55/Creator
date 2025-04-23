@@ -9,6 +9,42 @@ def initialize_interview_questions():
     """Add AWS scenario-based interview questions to the database"""
     
     aws_questions = [
+        # Daily featured AWS questions - 35 questions
+        {
+            "question": "A company wants to migrate a 20TB Oracle database to AWS with minimal downtime. The company has a 1Gbps internet connection with consistent usage of 50%. What is the MOST time and cost-efficient AWS service to use for this database migration?",
+            "field": "rds",
+            "difficulty": "hard",
+            "aws_service": "AWS Database Migration Service",
+            "is_pinned": True
+        },
+        {
+            "question": "A company is designing a web application architecture where the back-end API is hosted on Amazon EC2 instances and data is stored in Amazon DynamoDB. The company wants to ensure that if the primary region fails, the application can automatically fail over to a backup region with minimal data loss and downtime. Which combination of features should be used?",
+            "field": "dynamodb",
+            "difficulty": "hard",
+            "aws_service": "DynamoDB Global Tables, Route 53",
+            "is_pinned": True
+        },
+        {
+            "question": "A Database Administrator needs to migrate an on-premises Microsoft SQL Server database to AWS. The database is used for an online transaction processing (OLTP) application that has very strict performance requirements. Which AWS service should be used for this migration to minimize disruption and ensure performance?",
+            "field": "rds",
+            "difficulty": "medium",
+            "aws_service": "Amazon RDS for SQL Server",
+            "is_pinned": True
+        },
+        {
+            "question": "A DynamoDB table is experiencing throttling on read operations during peak business hours, but performs normally during off-peak hours. The application using this table cannot tolerate any read throttling. What is the MOST cost-effective way to eliminate the throttling?",
+            "field": "dynamodb",
+            "difficulty": "medium",
+            "aws_service": "DynamoDB Auto Scaling",
+            "is_pinned": True
+        },
+        {
+            "question": "A company has a legacy application that uses a PostgreSQL database for both transactional and analytical queries. The analytical queries are resource-intensive and impact the performance of transaction processing. How can the company improve performance of both workloads with minimal changes to the application?",
+            "field": "rds",
+            "difficulty": "medium",
+            "aws_service": "Aurora PostgreSQL",
+            "is_pinned": True
+        },
         # General AWS Questions
         {
             "question": "You're designing a web application that needs to store user profile pictures. The application will have millions of users, and the images need to be served with low latency globally. Which AWS services would you use for this scenario and why?",
@@ -264,6 +300,322 @@ def initialize_interview_questions():
             "is_pinned": False
         }
     ]
+    
+    # Additional specialized questions by AWS service
+    
+    # IAM Questions
+    iam_questions = [
+        {
+            "question": "Your company has multiple departments with different AWS resource access requirements. How would you implement the principle of least privilege using IAM?",
+            "field": "iam",
+            "difficulty": "medium",
+            "aws_service": "IAM",
+            "is_pinned": True
+        },
+        {
+            "question": "Your company has recently had a security audit that revealed some IAM users have excessive permissions. What AWS tools and best practices would you implement to address this issue?",
+            "field": "iam",
+            "difficulty": "medium",
+            "aws_service": "IAM, AWS Config",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to allow an EC2 instance to access an S3 bucket without using access keys. What is the most secure way to achieve this?",
+            "field": "iam",
+            "difficulty": "medium",
+            "aws_service": "IAM Roles",
+            "is_pinned": False
+        },
+        {
+            "question": "A developer on your team needs temporary access to a specific S3 bucket to troubleshoot an issue. How would you provide this access in the most secure way?",
+            "field": "iam",
+            "difficulty": "medium",
+            "aws_service": "IAM",
+            "is_pinned": False
+        },
+        {
+            "question": "You want to implement Multi-Factor Authentication (MFA) for all IAM users who access the AWS Management Console. How would you enforce this requirement?",
+            "field": "iam",
+            "difficulty": "medium",
+            "aws_service": "IAM",
+            "is_pinned": False
+        }
+    ]
+    
+    # VPC Questions
+    vpc_questions = [
+        {
+            "question": "You're designing a multi-tier architecture in AWS with public-facing web servers and private database servers. How would you configure the VPC, subnets, and routing to ensure proper security?",
+            "field": "vpc",
+            "difficulty": "medium",
+            "aws_service": "VPC, Subnets, Route Tables",
+            "is_pinned": True
+        },
+        {
+            "question": "Your application in a private subnet needs to access AWS services like S3 but should not be accessible from the internet. How would you configure this?",
+            "field": "vpc",
+            "difficulty": "medium",
+            "aws_service": "VPC Endpoints",
+            "is_pinned": False
+        },
+        {
+            "question": "You have two VPCs that need to communicate with each other. What are the different options to enable this communication, and what are the tradeoffs?",
+            "field": "vpc",
+            "difficulty": "medium",
+            "aws_service": "VPC Peering, Transit Gateway",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to implement network-level security for your EC2 instances. Explain the differences between security groups and network ACLs, and when you would use each.",
+            "field": "vpc",
+            "difficulty": "medium",
+            "aws_service": "Security Groups, Network ACLs",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to connect your on-premises network to AWS. What options are available, and how would you choose between them?",
+            "field": "vpc",
+            "difficulty": "hard",
+            "aws_service": "VPN, Direct Connect",
+            "is_pinned": False
+        }
+    ]
+    
+    # EC2 Questions
+    ec2_questions = [
+        {
+            "question": "Your organization needs to deploy a large number of EC2 instances for a batch processing workload with varying requirements. How would you choose the most cost-effective instance purchasing option?",
+            "field": "ec2",
+            "difficulty": "medium",
+            "aws_service": "EC2, Spot Instances, Reserved Instances",
+            "is_pinned": True
+        },
+        {
+            "question": "You need to deploy an application that requires high availability and fault tolerance. How would you design your EC2 deployment to meet these requirements?",
+            "field": "ec2",
+            "difficulty": "medium",
+            "aws_service": "EC2, Auto Scaling, ELB",
+            "is_pinned": False
+        },
+        {
+            "question": "Your EC2 instances need to maintain session state, but you also need to enable auto-scaling. How would you handle this?",
+            "field": "ec2",
+            "difficulty": "medium",
+            "aws_service": "EC2, ElastiCache, DynamoDB",
+            "is_pinned": False
+        },
+        {
+            "question": "Your application's EC2 instances need to interact with several other AWS services securely. What's the best practice for granting these permissions?",
+            "field": "ec2",
+            "difficulty": "medium",
+            "aws_service": "EC2, IAM",
+            "is_pinned": False
+        },
+        {
+            "question": "Your EC2 instances occasionally need to process large volumes of data, but for most of the time, they're underutilized. How would you optimize costs while maintaining performance when needed?",
+            "field": "ec2",
+            "difficulty": "medium",
+            "aws_service": "EC2, Auto Scaling",
+            "is_pinned": False
+        }
+    ]
+    
+    # S3 Questions
+    s3_questions = [
+        {
+            "question": "Your company needs to store large amounts of data in S3 with various access patterns. Some data is accessed frequently, some is rarely accessed, and some needs to be archived. How would you design a cost-effective storage solution?",
+            "field": "s3",
+            "difficulty": "medium",
+            "aws_service": "S3 Storage Classes",
+            "is_pinned": True
+        },
+        {
+            "question": "You need to ensure that all data uploaded to your S3 bucket is encrypted. What options are available, and how would you enforce this requirement?",
+            "field": "s3",
+            "difficulty": "medium",
+            "aws_service": "S3 Encryption",
+            "is_pinned": False
+        },
+        {
+            "question": "Your application needs to grant temporary access to specific objects in an S3 bucket to unauthenticated users. How would you implement this securely?",
+            "field": "s3",
+            "difficulty": "medium",
+            "aws_service": "S3 Presigned URLs",
+            "is_pinned": False
+        },
+        {
+            "question": "Your company needs to implement a lifecycle policy for S3 objects to control costs. What kinds of transitions and expiration rules would you implement?",
+            "field": "s3",
+            "difficulty": "medium",
+            "aws_service": "S3 Lifecycle Policies",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to replicate data in an S3 bucket to another region for disaster recovery. How would you configure this, and what are the considerations?",
+            "field": "s3",
+            "difficulty": "medium",
+            "aws_service": "S3 Cross-Region Replication",
+            "is_pinned": False
+        }
+    ]
+    
+    # EKS Questions
+    eks_questions = [
+        {
+            "question": "Your organization is moving toward container-based deployments and is considering Amazon EKS. What are the key components of an EKS architecture, and how would you design for high availability?",
+            "field": "eks",
+            "difficulty": "hard",
+            "aws_service": "EKS",
+            "is_pinned": True
+        },
+        {
+            "question": "You need to deploy a Kubernetes application on EKS with specific networking requirements. How would you configure the networking aspects of your EKS cluster?",
+            "field": "eks",
+            "difficulty": "hard",
+            "aws_service": "EKS, VPC CNI",
+            "is_pinned": False
+        },
+        {
+            "question": "Your EKS-based application needs to interact with other AWS services securely. How would you manage IAM permissions for pods running in your EKS cluster?",
+            "field": "eks",
+            "difficulty": "hard",
+            "aws_service": "EKS, IAM Roles for Service Accounts",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to implement monitoring and logging for your EKS cluster and the applications running on it. What AWS services would you use?",
+            "field": "eks",
+            "difficulty": "medium",
+            "aws_service": "EKS, CloudWatch, Container Insights",
+            "is_pinned": False
+        },
+        {
+            "question": "Your organization needs to automate the deployment of applications to your EKS cluster. What approach and tools would you recommend?",
+            "field": "eks",
+            "difficulty": "hard",
+            "aws_service": "EKS, AWS CodePipeline, ArgoCD",
+            "is_pinned": False
+        }
+    ]
+    
+    # Route53 Questions
+    route53_questions = [
+        {
+            "question": "Your company is migrating to AWS and needs to implement a DNS strategy. How would you use Route 53 to manage different types of DNS records and routing policies?",
+            "field": "route53",
+            "difficulty": "medium",
+            "aws_service": "Route 53",
+            "is_pinned": True
+        },
+        {
+            "question": "You have a multi-region application deployment and need to route users to the closest region for the lowest latency. How would you configure this with Route 53?",
+            "field": "route53",
+            "difficulty": "medium",
+            "aws_service": "Route 53 Latency Routing",
+            "is_pinned": False
+        },
+        {
+            "question": "Your application needs to failover to a backup endpoint if the primary endpoint becomes unhealthy. How would you implement this using Route 53?",
+            "field": "route53",
+            "difficulty": "medium",
+            "aws_service": "Route 53 Health Checks, Failover Routing",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to gradually migrate traffic from an on-premises application to AWS. How would you use Route 53 to implement a controlled migration strategy?",
+            "field": "route53",
+            "difficulty": "medium",
+            "aws_service": "Route 53 Weighted Routing",
+            "is_pinned": False
+        },
+        {
+            "question": "Your organization has multiple AWS accounts and wants to centralize DNS management. How would you implement a shared DNS architecture using Route 53?",
+            "field": "route53",
+            "difficulty": "hard",
+            "aws_service": "Route 53, Private Hosted Zones",
+            "is_pinned": False
+        }
+    ]
+    
+    # CloudWatch Questions
+    cloudwatch_questions = [
+        {
+            "question": "Your application is experiencing intermittent performance issues, and you need to identify the root cause. How would you use CloudWatch to monitor and troubleshoot the problem?",
+            "field": "cloudwatch",
+            "difficulty": "medium",
+            "aws_service": "CloudWatch",
+            "is_pinned": True
+        },
+        {
+            "question": "You need to implement automated responses to specific events in your AWS environment. How would you use CloudWatch and other AWS services to achieve this?",
+            "field": "cloudwatch",
+            "difficulty": "medium",
+            "aws_service": "CloudWatch Alarms, EventBridge",
+            "is_pinned": False
+        },
+        {
+            "question": "Your organization needs detailed monitoring of custom metrics for your application. How would you implement this using CloudWatch?",
+            "field": "cloudwatch",
+            "difficulty": "medium",
+            "aws_service": "CloudWatch Custom Metrics",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to collect and analyze logs from multiple AWS services and resources. How would you implement a centralized logging solution?",
+            "field": "cloudwatch",
+            "difficulty": "medium",
+            "aws_service": "CloudWatch Logs",
+            "is_pinned": False
+        },
+        {
+            "question": "Your team needs to create dashboards to visualize metrics from multiple AWS services. How would you implement this using CloudWatch?",
+            "field": "cloudwatch",
+            "difficulty": "medium",
+            "aws_service": "CloudWatch Dashboards",
+            "is_pinned": False
+        }
+    ]
+    
+    # Terraform Questions
+    terraform_questions = [
+        {
+            "question": "Your organization has decided to use Terraform for infrastructure as code on AWS. How would you approach designing a modular and maintainable Terraform codebase for multiple environments?",
+            "field": "terraform",
+            "difficulty": "hard",
+            "aws_service": "Terraform",
+            "is_pinned": True
+        },
+        {
+            "question": "You need to manage sensitive information like database credentials in your Terraform code. What are the best practices for handling secrets in Terraform?",
+            "field": "terraform",
+            "difficulty": "medium",
+            "aws_service": "Terraform, AWS Secrets Manager",
+            "is_pinned": False
+        },
+        {
+            "question": "Your team is working on multiple Terraform projects and needs to share state and provision resources across them. How would you implement this?",
+            "field": "terraform",
+            "difficulty": "hard",
+            "aws_service": "Terraform, S3 Remote State",
+            "is_pinned": False
+        },
+        {
+            "question": "You need to implement a CI/CD pipeline for your Terraform code to automatically apply changes when code is pushed to a repository. How would you design this pipeline?",
+            "field": "terraform",
+            "difficulty": "hard",
+            "aws_service": "Terraform, AWS CodePipeline",
+            "is_pinned": False
+        },
+        {
+            "question": "You're migrating existing AWS infrastructure to be managed by Terraform. What approach would you take to import existing resources?",
+            "field": "terraform",
+            "difficulty": "medium",
+            "aws_service": "Terraform",
+            "is_pinned": False
+        }
+    ]
+    
+    aws_questions.extend(iam_questions + vpc_questions + ec2_questions + s3_questions + eks_questions + route53_questions + cloudwatch_questions + terraform_questions)
     
     # Add questions to the database
     for q_data in aws_questions:

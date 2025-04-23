@@ -4,6 +4,14 @@ import { storage } from "./storage";
 import { LinkedInService } from "./services/linkedinService";
 import { JobScraperService } from "./services/jobScraperService";
 import { AutoApplyService } from "./services/autoApplyService";
+import { setupAuth } from "./auth";
+import { 
+  getInterviewStats, 
+  getUserServiceCompletion, 
+  getDailyQuestion, 
+  getQuestionsByService, 
+  getTopAwsServicesFromJobs 
+} from "./services/interviewQuestions";
 import { z } from "zod";
 import { 
   insertUserSchema, 
@@ -22,62 +30,27 @@ const jobScraperService = new JobScraperService();
 const autoApplyService = new AutoApplyService();
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Authentication endpoints
-  app.post("/api/auth/register", async (req, res) => {
-    try {
-      const userData = insertUserSchema.parse(req.body);
-      const existingUser = await storage.getUserByUsername(userData.username);
-      
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
-      
-      const user = await storage.createUser(userData);
-      // Remove password from response
-      const { password, ...userWithoutPassword } = user;
-      
-      res.status(201).json(userWithoutPassword);
-    } catch (error) {
-      res.status(400).json({ message: error instanceof Error ? error.message : "Invalid user data" });
-    }
-  });
-
-  app.post("/api/auth/login", async (req, res) => {
-    try {
-      const { username, password } = req.body;
-      
-      if (!username || !password) {
-        return res.status(400).json({ message: "Username and password required" });
-      }
-      
-      const user = await storage.getUserByUsername(username);
-      
-      if (!user || user.password !== password) {
-        return res.status(401).json({ message: "Invalid credentials" });
-      }
-      
-      // In a real application, you would create a session here
-      // For this implementation, we'll just return the user without the password
-      const { password: _, ...userWithoutPassword } = user;
-      
-      res.json(userWithoutPassword);
-    } catch (error) {
-      res.status(500).json({ message: "Login failed" });
-    }
-  });
-
+  // Setup authentication
+  setupAuth(app);
+  
   // User endpoints
-  app.get("/api/user/current", async (req, res) => {
-    // For demo purposes, return a mock user
-    // In a real application, this would check the session
-    const user = await storage.getUserByUsername("demo_user");
-    
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+  app.get("/api/user/current", (req, res) => {
+    if (req.isAuthenticated()) {
+      const { password, ...userWithoutPassword } = req.user as Express.User;
+      return res.json(userWithoutPassword);
     }
     
-    const { password, ...userWithoutPassword } = user;
-    res.json(userWithoutPassword);
+    // If not authenticated, check if we have a demo user (for development)
+    storage.getUserByUsername("demo_user").then(user => {
+      if (user) {
+        const { password, ...userWithoutPassword } = user;
+        res.json(userWithoutPassword);
+      } else {
+        res.status(401).json({ message: "Not authenticated" });
+      }
+    }).catch(() => {
+      res.status(401).json({ message: "Not authenticated" });
+    });
   });
 
   // LinkedIn integration endpoints
@@ -672,6 +645,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AWS Interview Question stats endpoints
+  app.get("/api/interview-questions/stats", async (req, res) => {
+    try {
+      // Use user ID 1 for demo purposes
+      const stats = await getInterviewStats(1);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch interview question stats" });
+    }
+  });
+
+  // User completion by AWS service endpoint
+  app.get("/api/interview-questions/user-completion", async (req, res) => {
+    try {
+      // Use user ID 1 for demo purposes
+      const completion = await getUserServiceCompletion(1);
+      res.json(completion);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user completion stats" });
+    }
+  });
+
+  // AWS service-specific questions endpoint
+  app.get("/api/interview-questions/service/:service", async (req, res) => {
+    try {
+      const service = req.params.service;
+      const questions = await getQuestionsByService(service);
+      res.json(questions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch service-specific questions" });
+    }
+  });
+
+  // Top AWS services from job postings endpoint
+  app.get("/api/interview-questions/top-services", async (req, res) => {
+    try {
+      // Use user ID 1 for demo purposes
+      const topServices = await getTopAwsServicesFromJobs(1);
+      res.json(topServices);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch top AWS services" });
+    }
+  });
+  
   // Dashboard stats endpoint
   app.get("/api/stats", async (req, res) => {
     try {
